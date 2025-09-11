@@ -1,0 +1,12 @@
+menubar: true
+toolbar:
+  - undo redo | blocks | bold italic media emoticons link | alignleft aligncenter alignright | bullist numlist outdent indent | removeformat
+plugins:
+  - insertdatetime lists media table wordcount autolink lists link
+powerpaste_allow_local_images: true
+powerpaste_word_import: "clean"
+powerpaste_html_import: "clean"
+powerpaste_googledocs_import: "prompt"
+relative_urls: false
+remove_script_host: false
+convert_urls: false
