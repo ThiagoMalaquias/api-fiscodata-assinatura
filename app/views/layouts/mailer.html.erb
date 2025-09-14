@@ -2,12 +2,53 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assinatura Digital</title>
     <style>
-      /* Email styles need to be inline */
+      /* Reset styles for email clients */
+      body, table, td, p, a, li, blockquote {
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+      }
+      table, td {
+        mso-table-lspace: 0pt;
+        mso-table-rspace: 0pt;
+      }
+      img {
+        -ms-interpolation-mode: bicubic;
+        border: 0;
+        outline: none;
+        text-decoration: none;
+      }
+
+      /* Email-specific styles */
+      body {
+        margin: 0 !important;
+        padding: 0 !important;
+        background-color: #f8f9fa;
+        font-family: Arial, sans-serif;
+      }
+
+      .email-container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+      }
+
+      /* Responsive styles */
+      @media only screen and (max-width: 600px) {
+        .email-container {
+          width: 100% !important;
+        }
+        .mobile-padding {
+          padding: 15px !important;
+        }
+      }
     </style>
   </head>
-
-  <body>
-    <%= yield %>
+  <body style="margin: 0; padding: 0; background-color: #f8f9fa;">
+    <div class="email-container">
+      <%= yield %>
+    </div>
   </body>
 </html>
