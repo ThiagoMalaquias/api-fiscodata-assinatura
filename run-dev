@@ -3,12 +3,12 @@ set -euo pipefail
 
 # Derruba containers antigos pra liberar as portas
 echo "==> Parando containers antigos..."
-docker compose down
+docker compose -f docker-compose.local.yml down
 
 # Sobe db e redis em background
 echo "==> Subindo dependências (db, redis, worker)..."
-docker compose up -d db redis worker
+docker compose -f docker-compose.local.yml up -d db redis worker
 
 # Roda o Rails em foreground, com portas e STDIN anexado
 echo "==> Subindo Rails em modo dev com debugger (Ctrl+C pra parar)..."
-docker compose run --rm --service-ports web bundle exec rails s -b 0.0.0.0
+docker compose -f docker-compose.local.yml run --rm --service-ports web bundle exec rails s -b 0.0.0.0

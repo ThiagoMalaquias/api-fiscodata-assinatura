@@ -1,7 +1,7 @@
-# Imagem base Ruby
+# Imagem base Ruby (versão específica para produção)
 FROM ruby:3.1.2
 
-# Dependências de SO (ajuste se não usar wkhtmltopdf/imagemagick)
+# Dependências de SO (otimizadas para produção)
 RUN apt-get update -qq && apt-get install -y \
     build-essential \
     libpq-dev \
@@ -11,56 +11,59 @@ RUN apt-get update -qq && apt-get install -y \
     libmagickwand-dev \
     wkhtmltopdf \
     xvfb \
-  && rm -rf /var/lib/apt/lists/*
+    curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# Criar usuário não-root para segurança
+RUN groupadd -r app && useradd -r -g app app
 
 # Diretório de trabalho
 WORKDIR /app
 
 # ===== Bundler (cache friendly) =====
-# Copia manifestos Ruby primeiro pra aproveitar cache
 COPY Gemfile Gemfile.lock ./
 
-# Controla ambiente via ARG (padrão: development)
-ARG RAILS_ENV=development
-ENV RAILS_ENV=$RAILS_ENV
+# Configurar para produção
+ENV RAILS_ENV=production
+ENV BUNDLE_WITHOUT=development:test
+ENV BUNDLE_PATH=/usr/local/bundle
 
-# Em produção, pula gems de dev/test; em dev, instala tudo
-RUN if [ "$RAILS_ENV" = "production" ]; then \
-      bundle config set --local without 'development test'; \
-    else \
-      bundle config unset without || true; \
-    fi && \
-    bundle install
+# Instalar gems de produção apenas
+RUN bundle install --frozen --without development test
 
 # ===== Node (npm) =====
-# Use somente npm (sem yarn). Copie APENAS package*.json
 COPY package*.json ./
 
-# Instala dependências JS de forma determinística se houver lockfile
+# Instalar dependências JS
 RUN if [ -f package-lock.json ]; then \
-      npm ci --no-audit --no-fund; \
+      npm ci --only=production --no-audit --no-fund; \
     else \
-      npm install --no-audit --no-fund; \
+      npm install --only=production --no-audit --no-fund; \
     fi
 
 # ===== Código da aplicação =====
 COPY . .
 
-# Precompile de assets **somente** em produção
-RUN if [ "$RAILS_ENV" = "production" ]; then \
-      bundle exec rails assets:precompile; \
-    fi
+# Precompile assets
+RUN bundle exec rails assets:precompile
 
-# Pastas necessárias (evita erro do pid/log)
-RUN mkdir -p log tmp/pids tmp/cache tmp/sockets && \
-    chmod -R 0775 log tmp
+# Criar diretórios necessários
+RUN mkdir -p log tmp/pids tmp/cache tmp/sockets storage && \
+    chown -R app:app /app && \
+    chmod -R 0755 /app
+
+# Trocar para usuário não-root
+USER app
 
 # Porta padrão do Rails
 EXPOSE 3000
 
-# Entrypoint (remove server.pid etc.)
+# Entrypoint otimizado
 COPY entrypoint.sh /usr/bin/
+USER root
 RUN chmod +x /usr/bin/entrypoint.sh
+USER app
 ENTRYPOINT ["entrypoint.sh"]
 
 # Comando padrão
