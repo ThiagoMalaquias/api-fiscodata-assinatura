@@ -15,6 +15,9 @@ RUN apt-get update -qq && apt-get install -y \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
+# Instalar Yarn (necessário para Rails assets)
+RUN npm install -g yarn
+
 # Criar usuário não-root para segurança
 RUN groupadd -r app && useradd -r -g app app
 
@@ -32,20 +35,18 @@ ENV BUNDLE_PATH=/usr/local/bundle
 # Instalar gems de produção apenas
 RUN bundle install --frozen --without development test
 
-# ===== Node (npm) =====
+# ===== Node (npm/yarn) =====
 COPY package*.json ./
 
-# Instalar dependências JS
-RUN if [ -f package-lock.json ]; then \
-      npm ci --only=production --no-audit --no-fund; \
-    else \
-      npm install --only=production --no-audit --no-fund; \
-    fi
+# Instalar dependências JS com Yarn
+RUN yarn install --frozen-lockfile --production
 
 # ===== Código da aplicação =====
 COPY . .
 
-# Precompile assets
+# Precompile assets (com RAILS_MASTER_KEY)
+ARG RAILS_MASTER_KEY
+ENV RAILS_MASTER_KEY=$RAILS_MASTER_KEY
 RUN bundle exec rails assets:precompile
 
 # Criar diretórios necessários

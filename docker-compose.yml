@@ -34,7 +34,7 @@ services:
   web:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.production
     ports:
       - "3000:3000"
     environment:
@@ -58,7 +58,7 @@ services:
   worker:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.production
     command: bundle exec sidekiq -C config/sidekiq.yml
     environment:
       - RAILS_ENV=production
