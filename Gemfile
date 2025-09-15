@@ -49,6 +49,11 @@ group :development do
   gem 'rubocop-minitest', require: false
   gem 'rubocop-performance', require: false
   gem 'rubocop-rails', require: false
+  gem 'capistrano', '~> 3.17'
+  gem 'capistrano-rails', '~> 1.6'
+  gem 'capistrano-bundler', '~> 2.0'
+  gem 'capistrano-rvm', '~> 0.1'
+  gem 'capistrano3-puma', '~> 5.0'
 end
 
 group :test do

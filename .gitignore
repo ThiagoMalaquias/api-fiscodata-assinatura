@@ -305,3 +305,4 @@ $RECYCLE.BIN/
 /yarn-error.log
 yarn-debug.log*
 .yarn-integrity
+.env.production

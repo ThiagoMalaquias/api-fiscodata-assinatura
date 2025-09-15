@@ -53,3 +53,6 @@ Explique como outros desenvolvedores podem contribuir para o projeto. Inclua inf
 ## Para guardar
 
 Buffer.from("sk_7a870cdb53de4f0cbf351a897f6b32df:").toString('base64')
+
+Em prod:
+docker-compose -f docker-compose.yml exec web bash
