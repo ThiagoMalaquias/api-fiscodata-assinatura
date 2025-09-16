@@ -48,7 +48,6 @@ COPY . .
 # Precompile assets (defina SECRET_KEY_BASE se o seu app exigir no build)
 # ENV SECRET_KEY_BASE=dummy-for-build
 RUN node -v && npm -v  # sanity check (remova depois se quiser)
-RUN bundle exec rails assets:precompile
 
 # Diretórios e permissões
 RUN mkdir -p log tmp/pids tmp/cache tmp/sockets storage && \
