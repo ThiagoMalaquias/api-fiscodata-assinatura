@@ -1,70 +1,65 @@
-# Imagem base Ruby (versão específica para produção)
+# Imagem base Ruby
 FROM ruby:3.1.2
 
-# Dependências de SO (otimizadas para produção)
+# SO deps (sem nodejs/npm do Debian!)
 RUN apt-get update -qq && apt-get install -y \
+    curl \
+    ca-certificates \
+    gnupg \
     build-essential \
     libpq-dev \
-    nodejs \
-    npm \
+    libffi-dev \           
     imagemagick \
     libmagickwand-dev \
     wkhtmltopdf \
     xvfb \
-    curl \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
+  && rm -rf /var/lib/apt/lists/*
 
-# Criar usuário não-root para segurança
+# Node 18 LTS via NodeSource
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+  && apt-get install -y nodejs \
+  && rm -rf /var/lib/apt/lists/*
+
+# Usuário não-root
 RUN groupadd -r app && useradd -r -g app app
-
-# Diretório de trabalho
 WORKDIR /app
 
-# ===== Bundler (cache friendly) =====
+# ===== Bundler (cache-friendly) =====
 COPY Gemfile Gemfile.lock ./
 
-# Configurar para produção
 ENV RAILS_ENV=production
-ENV BUNDLE_WITHOUT=development:test
 ENV BUNDLE_PATH=/usr/local/bundle
+ENV BUNDLE_WITHOUT="development:test"
 
-# Instalar gems de produção apenas
-RUN bundle install --frozen --without development test
+# Alinhar bundler à versão do lockfile e forçar build nativo (ffi)
+RUN gem install bundler:2.3.16
+RUN bundle config set force_ruby_platform true
+RUN bundle install --jobs 4 --retry 3
 
 # ===== Node (npm) =====
-COPY package*.json ./
-
-# Instalar dependências JS
-RUN if [ -f package-lock.json ]; then \
-      npm ci --only=production --no-audit --no-fund; \
-    else \
-      npm install --only=production --no-audit --no-fund; \
-    fi
+# Use npm com lockfile oficial (package-lock.json).
+# IMPORTANTE: não use npm --production aqui, pois você precisa das devDeps para compilar os assets.
+COPY package.json package-lock.json ./
+RUN npm ci
 
 # ===== Código da aplicação =====
 COPY . .
 
-# Precompile assets
-# RUN bundle exec rails assets:precompile
+# Precompile assets (defina SECRET_KEY_BASE se o seu app exigir no build)
+# ENV SECRET_KEY_BASE=dummy-for-build
+RUN node -v && npm -v  # sanity check (remova depois se quiser)
+RUN bundle exec rails assets:precompile
 
-# Criar diretórios necessários
+# Diretórios e permissões
 RUN mkdir -p log tmp/pids tmp/cache tmp/sockets storage && \
     chown -R app:app /app && \
     chmod -R 0755 /app
 
-# Trocar para usuário não-root
-USER app
-
-# Porta padrão do Rails
-EXPOSE 3000
-
-# Entrypoint otimizado
+# Entrypoint
 COPY entrypoint.sh /usr/bin/
-USER root
 RUN chmod +x /usr/bin/entrypoint.sh
-USER app
-ENTRYPOINT ["entrypoint.sh"]
 
-# Comando padrão
+USER app
+EXPOSE 3000
+ENTRYPOINT ["entrypoint.sh"]
 CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]
