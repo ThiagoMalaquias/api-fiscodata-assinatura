@@ -14,7 +14,7 @@ class Api::V1::User::DocumentsController < Api::V1::User::ApplicationController
       document_reviewer
       document_signers
 
-      render json: @document.as_json(except: [:file], include: [:reviewer, :signers]), status: :created
+      render json: @document.as_json(except: [:file], include: [:reviewer]), status: :created
     else
       render json: { errors: @document.errors }, status: :unprocessable_entity
     end
