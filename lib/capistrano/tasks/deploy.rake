@@ -38,6 +38,7 @@ namespace :deploy do
       # Carregar variáveis de ambiente em um único comando
       execute "cd /opt/fiscodata/api-fiscodata-assinatura && export $(grep -v '^#' .env.production | grep -v '^$' | xargs) && docker-compose -f docker-compose.yml down"
       execute "cd /opt/fiscodata/api-fiscodata-assinatura && export $(grep -v '^#' .env.production | grep -v '^$' | xargs) && git pull origin main"
+      execute "cd /opt/fiscodata/api-fiscodata-assinatura && export $(grep -v '^#' .env.production | grep -v '^$' | xargs) && docker-compose -f docker-compose.yml build"
       execute "cd /opt/fiscodata/api-fiscodata-assinatura && export $(grep -v '^#' .env.production | grep -v '^$' | xargs) && docker-compose -f docker-compose.yml up -d"
       execute "cd /opt/fiscodata/api-fiscodata-assinatura && export $(grep -v '^#' .env.production | grep -v '^$' | xargs) && docker-compose -f docker-compose.yml exec -T web bundle exec rails db:migrate"
       execute "cd /opt/fiscodata/api-fiscodata-assinatura && export $(grep -v '^#' .env.production | grep -v '^$' | xargs) && docker-compose -f docker-compose.yml restart web worker"
