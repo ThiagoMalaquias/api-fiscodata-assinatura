@@ -1,4 +1,4 @@
-class Api::V1::AuthController < Api::V1::ApplicationController
+class Api::V1::User::AuthController < Api::V1::User::ApplicationController
   skip_before_action :validate_token
   
   def login

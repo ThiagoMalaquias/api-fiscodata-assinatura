@@ -1,4 +1,4 @@
-class Api::V1::DocumentsController < Api::V1::ApplicationController
+class Api::V1::Signer::DocumentsController < Api::V1::Signer::ApplicationController
   before_action :set_document, only: [:show, :update, :destroy]
 
   def index

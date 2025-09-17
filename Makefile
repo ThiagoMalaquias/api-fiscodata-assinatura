@@ -2,46 +2,46 @@
 
 # Build da aplicação
 build:
-	docker-compose build
+	docker-compose -f docker-compose.local.yml build
 
 # Subir os serviços
 up:
-	docker-compose up -d
+	docker-compose -f docker-compose.local.yml up -d
 
 # Subir os serviços em modo desenvolvimento (com logs)
 dev:
-	docker-compose up
+	docker-compose -f docker-compose.local.yml up
 
 # Parar os serviços
 down:
-	docker-compose down
+	docker-compose -f docker-compose.local.yml down
 
 # Ver logs
 logs:
-	docker-compose logs -f
+	docker-compose -f docker-compose.local.yml logs -f
 
 # Acessar shell da aplicação
 shell:
-	docker-compose exec web bash
+	docker-compose -f docker-compose.local.yml exec web bash
 
 # Configurar banco de dados
 db-setup:
-	docker-compose exec web bundle exec rails db:create db:migrate db:seed
+	docker-compose -f docker-compose.local.yml exec web bundle exec rails db:create db:migrate db:seed
 
 # Limpar containers e volumes
 clean:
-	docker-compose down -v
+	docker-compose -f docker-compose.local.yml down -v
 	docker system prune -f
 
 # Executar testes
 test:
-	docker-compose exec web bundle exec rails test
+	docker-compose -f docker-compose.local.yml exec web bundle exec rails test
 
 # Executar console Rails
 console:
-	docker-compose exec web bundle exec rails console
+	docker-compose -f docker-compose.local.yml exec web bundle exec rails console
 
 # Instalar dependências
 install:
-	docker-compose run --rm web bundle install
-	docker-compose run --rm web yarn install
+	docker-compose -f docker-compose.local.yml run --rm web bundle install
+	docker-compose -f docker-compose.local.yml run --rm web yarn install

@@ -177,7 +177,7 @@ GEM
     ffaker (2.23.0)
     ffi (1.17.0)
     ffi (1.17.0-arm64-darwin)
-    ffi (1.17.0-x86_64-linux-gnu)
+    ffi (1.17.0-x86_64-linux)
     flay (2.13.3)
       erubi (~> 1.10)
       path_expander (~> 1.0)

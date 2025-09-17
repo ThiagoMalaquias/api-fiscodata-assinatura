@@ -47,6 +47,7 @@ services:
       - DATABASE_PASSWORD=postgres
       - DATABASE_NAME=assinatura_api_development
       - REDIS_URL=redis://redis:6379/0
+      - SKIP_DB_PREPARE=1
     depends_on:
       db:
         condition: service_healthy

@@ -1,4 +1,4 @@
-class Api::V1::CompaniesController < Api::V1::ApplicationController
+class Api::V1::User::CompaniesController < Api::V1::User::ApplicationController
   skip_before_action :validate_token, only: [:create]
   before_action :set_company, only: [:show, :update, :destroy]
 
