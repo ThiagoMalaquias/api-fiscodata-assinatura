@@ -2,7 +2,7 @@ class Api::V1::User::DocumentsController < Api::V1::User::ApplicationController
   before_action :set_document, only: [:show, :update, :destroy]
 
   def index
-    @documents = Document.all
+    @documents = @current_user.documents
   end
 
   def show
