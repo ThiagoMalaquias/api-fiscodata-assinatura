@@ -9,7 +9,7 @@ class Api::V1::User::DocumentsController < Api::V1::User::ApplicationController
   end
 
   def create
-    @document = @user.documents.new(document_params)
+    @document = @current_user.documents.new(document_params)
     if @document.save
       document_reviewer
       document_signers

@@ -8,8 +8,8 @@ class Api::V1::User::ApplicationController < ActionController::API
   def validate_token
     token = request.headers["authorization"].to_s.gsub("Bearer ", "") rescue ""
     payload, = JWT.decode(token, Rails.application.credentials.secret_key_base)
-    @user = User.find(payload["user_id"])
-    return if @user.present?
+    @current_user = User.find(payload["user_id"])
+    return if @current_user.present?
 
     return render json: { error: "Token expirado" }, status: :unauthorized
   rescue
