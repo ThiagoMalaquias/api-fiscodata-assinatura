@@ -6,6 +6,8 @@ class Signer < ApplicationRecord
   after_create :send_document_to_signer
   after_update :verify_signatures, if: :saved_change_to_status?
 
+  scope :pending, -> { where(status: "pending") }
+
   private
 
   def verify_signatures

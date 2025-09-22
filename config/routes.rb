@@ -17,6 +17,10 @@ Rails.application.routes.draw do
         resources :signatures
         resources :documents
         resources :templates
+
+        resources :dashboard do
+          get :recent_documents, on: :collection
+        end
       end
 
       namespace :signer do
