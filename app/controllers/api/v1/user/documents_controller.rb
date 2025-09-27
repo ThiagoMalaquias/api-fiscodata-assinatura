@@ -1,23 +1,42 @@
 class Api::V1::User::DocumentsController < Api::V1::User::ApplicationController
-  before_action :set_document, only: [:show, :update, :destroy]
+  before_action :set_document, only: [:show, :update, :destroy, :approve, :reject]
 
   def index
-    @documents = @current_user.documents
+    # Documentos que eu criei OU documentos que eu preciso revisar
+    @documents = Document.left_joins(:reviewer)
+                        .where(
+                          "documents.user_id = ? OR reviewers.user_id = ?",
+                          @current_user.id, @current_user.id
+                        )
+                        .order(created_at: :desc)
   end
 
   def show
   end
 
-  def create
-    @document = @current_user.documents.new(document_params)
-    if @document.save
-      document_reviewer
-      document_signers
-
-      render json: @document.as_json(except: [:file], include: [:reviewer]), status: :created
+  def approve
+    if @document.reviewer.approve!
+      render json: { message: "Documento aprovado com sucesso" }, status: :ok
     else
-      render json: { errors: @document.errors }, status: :unprocessable_entity
+      render json: { errors: @document.reviewer.errors }, status: :unprocessable_entity
     end
+  end
+
+  def reject
+    if @document.reviewer.reject!
+      render json: { message: "Documento rejeitado" }, status: :ok
+    else
+      render json: { errors: @document.reviewer.errors }, status: :unprocessable_entity
+    end
+  end
+
+  def create
+    service = DocumentCreationService.new(@current_user, document_params, params[:document][:reviewer], params[:document][:signers])
+    @document = service.call
+    
+    render json: @document.as_json(except: [:file], include: [:reviewer]), status: :created
+  rescue ActiveRecord::RecordInvalid => e
+    render json: { errors: e.record.errors }, status: :unprocessable_entity
   end
 
   def update
@@ -32,27 +51,6 @@ class Api::V1::User::DocumentsController < Api::V1::User::ApplicationController
   end
 
   private
-
-  def document_reviewer
-    if params[:document][:reviewer] && params[:document][:reviewer] != "null"
-      reviewer_data = JSON.parse(params[:document][:reviewer])
-      Reviewer.create(document_id: @document.id, user_id: reviewer_data["id"])
-    end
-  end
-
-  def document_signers
-    if params[:document][:signers]
-      signers_data = JSON.parse(params[:document][:signers])
-      signers_data.each do |signer|
-        @document.signers.create(
-          name: signer["name"], 
-          email: signer["email"], 
-          role: signer["role"],
-          code: SecureRandom.uuid
-        )
-      end
-    end
-  end
 
   def set_document
     @document = Document.find(params[:id])

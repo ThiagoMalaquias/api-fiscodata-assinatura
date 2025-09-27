@@ -1,0 +1,128 @@
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f8f9fa; padding: 20px;">
+  <div style="background-color: #ffffff; border-radius: 8px 8px 0 0; padding: 30px; text-align: center; border-bottom: 3px solid #28a745;">
+    <h1 style="color: #333333; margin: 0; font-size: 24px; font-weight: 600;">
+      Documento para Revisão
+    </h1>
+    <p style="color: #666666; margin: 10px 0 0 0; font-size: 16px;">
+      Você foi designado como revisor de um documento
+    </p>
+  </div>
+
+  <div style="background-color: #ffffff; padding: 30px; border-radius: 0 0 8px 8px;">
+    <div style="margin-bottom: 25px;">
+      <h2 style="color: #333333; font-size: 20px; margin: 0 0 10px 0;">
+        Olá, <%= @reviewer.user.name %>!
+      </h2>
+      <p style="color: #555555; font-size: 16px; line-height: 1.5; margin: 0;">
+        Você foi designado para revisar e aprovar o documento abaixo antes que ele seja enviado para assinatura. 
+        Por favor, acesse a plataforma para revisar o conteúdo e proceder com a aprovação.
+      </p>
+    </div>
+
+    <div style="background-color: #f8f9fa; border-left: 4px solid #28a745; padding: 20px; margin: 25px 0; border-radius: 4px;">
+      <h3 style="color: #333333; font-size: 18px; margin: 0 0 15px 0;">
+        Informações do Documento
+      </h3>
+      
+      <div style="margin-bottom: 10px;">
+        <strong style="color: #333333;">Nome do Documento:</strong>
+        <span style="color: #555555; margin-left: 8px;"><%= @document.name %></span>
+      </div>
+      
+      <div style="margin-bottom: 10px;">
+        <strong style="color: #333333;">Descrição:</strong>
+        <span style="color: #555555; margin-left: 8px;"><%= @document.description %></span>
+      </div>
+      
+      <div style="margin-bottom: 10px;">
+        <strong style="color: #333333;">Criado por:</strong>
+        <span style="color: #555555; margin-left: 8px;"><%= @document.user.name %></span>
+      </div>
+      
+      <% if @document.deadline_at %>
+        <div style="margin-bottom: 10px;">
+          <strong style="color: #333333;">Prazo para Assinatura:</strong>
+          <span style="color: #dc3545; margin-left: 8px; font-weight: 600;">
+            <%= @document.deadline_at.strftime("%d/%m/%Y") %>
+          </span>
+        </div>
+      <% end %>
+      
+      <div style="margin-bottom: 0;">
+        <strong style="color: #333333;">Data de Criação:</strong>
+        <span style="color: #555555; margin-left: 8px;"><%= @document.created_at.strftime("%d/%m/%Y às %H:%M") %></span>
+      </div>
+    </div>
+
+    <!-- Signers Information -->
+    <% if @document.signers.any? %>
+      <div style="background-color: #e8f5e8; border: 1px solid #c3e6c3; padding: 20px; border-radius: 6px; margin: 25px 0;">
+        <h4 style="color: #155724; font-size: 16px; margin: 0 0 15px 0;">
+          👥 Signatários Aguardando Aprovação:
+        </h4>
+        <% @document.signers.each do |signer| %>
+          <div style="margin-bottom: 8px; padding: 8px; background-color: #ffffff; border-radius: 4px;">
+            <strong style="color: #333333;"><%= signer.name %></strong>
+            <span style="color: #666666; margin-left: 8px;">(<%= signer.email %>)</span>
+            <span style="color: #28a745; margin-left: 8px; font-size: 12px; background-color: #d4edda; padding: 2px 6px; border-radius: 3px;">
+              <%= signer.role %>
+            </span>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <div style="text-align: center; margin: 30px 0;">
+      <a href="http://207.180.210.123:3000/reviewer/documents/<%= @document.id %>" 
+         style="display: inline-block; background-color: #28a745; color: #ffffff; 
+                text-decoration: none; padding: 15px 30px; border-radius: 6px; 
+                font-size: 16px; font-weight: 600; text-align: center; 
+                box-shadow: 0 2px 4px rgba(40,167,69,0.3);">
+        🔍 Acessar Plataforma para Revisar
+      </a>
+    </div>
+
+    <div style="background-color: #e7f3ff; border: 1px solid #b8daff; padding: 20px; border-radius: 6px; margin: 25px 0;">
+      <h4 style="color: #004085; font-size: 16px; margin: 0 0 10px 0;">
+        📋 Como proceder:
+      </h4>
+      <ol style="color: #004085; font-size: 14px; line-height: 1.6; margin: 0; padding-left: 20px;">
+        <li>Clique no botão "Acessar Plataforma para Revisar" acima</li>
+        <li>Faça login na plataforma com suas credenciais</li>
+        <li>Revise cuidadosamente o documento e suas informações</li>
+        <li>Verifique se todos os signatários estão corretos</li>
+        <li>Aprove ou rejeite o documento através da plataforma</li>
+      </ol>
+    </div>
+
+    <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 6px; margin: 25px 0;">
+      <p style="color: #856404; font-size: 14px; margin: 0; text-align: center;">
+        ⚠️ <strong>Importante:</strong> Após sua aprovação na plataforma, o documento será automaticamente enviado 
+        para todos os signatários listados acima. Certifique-se de que está satisfeito com o conteúdo antes de aprovar.
+      </p>
+    </div>
+
+    <div style="background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; border-radius: 6px; margin: 25px 0;">
+      <p style="color: #721c24; font-size: 14px; margin: 0; text-align: center;">
+        🔒 <strong>Responsabilidade:</strong> Como revisor, você é responsável por garantir a precisão 
+        e adequação do documento antes de sua aprovação para assinatura.
+      </p>
+    </div>
+
+    <div style="background-color: #f8f9fa; border: 1px solid #dee2e6; padding: 15px; border-radius: 6px; margin: 25px 0;">
+      <p style="color: #495057; font-size: 14px; margin: 0; text-align: center;">
+        🔐 <strong>Precisa de ajuda para acessar?</strong> Entre em contato com o suporte técnico ou 
+        com <%= @document.user.name %> para obter assistência com o login.
+      </p>
+    </div>
+
+    <div style="border-top: 1px solid #dee2e6; padding-top: 20px; margin-top: 30px; text-align: center;">
+      <p style="color: #6c757d; font-size: 14px; margin: 0 0 10px 0;">
+        Em caso de dúvidas sobre o documento, entre em contato com <%= @document.user.name %>.
+      </p>
+      <p style="color: #6c757d; font-size: 12px; margin: 0;">
+        Este é um email automático, por favor não responda diretamente.
+      </p>
+    </div>    
+  </div>
+</div>

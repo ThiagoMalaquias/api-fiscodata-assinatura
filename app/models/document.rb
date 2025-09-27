@@ -7,11 +7,21 @@ class Document < ApplicationRecord
 
   enum status: {
     draft: "draft",
-    pending: "pending",
-    completed: "completed"
+    pending_review: "pending_review",
+    pending_signature: "pending_signature",
+    completed: "completed",
+    rejected: "rejected"
   }
 
   validates :name, presence: true
   validates :file, presence: true
   validates :description, presence: true
+
+  def requires_review?
+    reviewer.present?
+  end
+
+  def ready_for_signatures?
+    !requires_review? || reviewer&.approved?
+  end
 end

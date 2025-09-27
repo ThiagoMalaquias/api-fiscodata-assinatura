@@ -9,8 +9,9 @@ end
 if document.reviewer
   json.reviewer do
     json.id document.reviewer.id
-    json.name document.reviewer.user.name
-    json.email document.reviewer.user.email
+    json.user_id document.reviewer.user.id
+    json.user_name document.reviewer.user.name
+    json.user_email document.reviewer.user.email
     json.status document.reviewer.status
   end
 end

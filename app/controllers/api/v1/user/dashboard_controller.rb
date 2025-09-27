@@ -13,6 +13,14 @@ class Api::V1::User::DashboardController < Api::V1::User::ApplicationController
     }, status: :ok
   end
 
+  def review_documents
+    @review_count = Document.includes(:reviewer).where(reviewer: { status: "pending", user_id: @current_user.id }).count
+
+    render json: {
+      review_count: @review_count
+    }, status: :ok
+  end
+
   def recent_documents
     @documents = @current_user.documents.includes(:signers).order(created_at: :desc).limit(5)
   end

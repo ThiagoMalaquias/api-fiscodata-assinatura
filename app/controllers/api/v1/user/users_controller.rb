@@ -2,7 +2,10 @@ class Api::V1::User::UsersController < Api::V1::User::ApplicationController
   before_action :set_user, only: [:show, :update, :destroy]
 
   def index
-    @users = User.where(company_id: @current_user.company_id)
+    @users = @current_user.company.users.where.not(id: @current_user.id).order(created_at: :desc)
+  end
+
+  def me
   end
 
   def show

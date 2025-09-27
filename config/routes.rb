@@ -15,11 +15,18 @@ Rails.application.routes.draw do
         resources :users
         resources :companies
         resources :signatures
-        resources :documents
         resources :templates
+
+        resources :documents do
+          member do
+            patch :approve
+            patch :reject
+          end
+        end
 
         resources :dashboard do
           get :recent_documents, on: :collection
+          get :review_documents, on: :collection
         end
       end
 
@@ -36,6 +43,9 @@ Rails.application.routes.draw do
         post "document/:code/sign", on: :collection, action: :sign
         post "document/:code/reject", on: :collection, action: :reject
       end
+
+      resources :users
+      resources :companies
     end
   end
 
