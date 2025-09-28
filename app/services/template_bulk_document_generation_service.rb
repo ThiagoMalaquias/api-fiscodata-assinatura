@@ -1,24 +1,24 @@
 class TemplateBulkDocumentGenerationService
-  def initialize(template, template_users)
+  def initialize(template, users, current_user)
     @template = template
-    @template_users = template_users
+    @users = users
+    @current_user = current_user
   end
 
   def call
     results = []
-    
-    @template_users.each do |template_user|
-      service = DocumentGenerationFromTemplateService.new(template_user)
-      document = service.call
-      
+  
+    @users.each do |user|
+      document = DocumentGenerationFromTemplateService.new(@template, user, @current_user).call
+ 
       results << {
-        template_user: template_user,
+        user: user,
         document: document,
         success: true
       }
     rescue => e
       results << {
-        template_user: template_user,
+        user: user,
         error: e.message,
         success: false
       }

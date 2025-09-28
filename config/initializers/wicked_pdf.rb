@@ -1,3 +1,4 @@
-WickedPdf.config = {
-  exe_path: Rails.env.production? ? '/usr/local/bin/wkhtmltopdf' : `which wkhtmltopdf`.strip
+WickedPdf.config ||= {
+  exe_path: ENV.fetch('WKHTMLTOPDF_PATH', '/usr/bin/wkhtmltopdf'),
+  enable_local_file_access: true
 }

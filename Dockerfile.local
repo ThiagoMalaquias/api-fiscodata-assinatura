@@ -10,8 +10,11 @@ RUN apt-get update -qq && apt-get install -y \
     imagemagick \
     libmagickwand-dev \
     wkhtmltopdf \
-    xvfb \
-  && rm -rf /var/lib/apt/lists/*
+    fonts-dejavu \
+    fonts-liberation \
+    fonts-noto-color-emoji \
+    xfonts-75dpi xfonts-base \
+    && rm -rf /var/lib/apt/lists/*
 
 # Diretório de trabalho
 WORKDIR /app

@@ -7,11 +7,14 @@ class DocumentCreationService
   end
 
   def call
-    create_document
-    create_reviewer if @reviewer_data
-    create_signers if @signers_data
-    send_initial_notifications
-    @document
+    ActiveRecord::Base.transaction do
+      create_document
+      create_reviewer if @reviewer_data
+      create_signers if @signers_data
+      send_initial_notifications
+
+      @document
+    end
   rescue StandardError => e
     raise StandardError, e.message
   end

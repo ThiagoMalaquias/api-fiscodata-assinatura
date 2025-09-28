@@ -15,7 +15,10 @@ Rails.application.routes.draw do
         resources :users
         resources :companies
         resources :signatures
-        resources :templates
+
+        resources :templates do
+          post :bulk_create, on: :member
+        end
 
         resources :documents do
           member do

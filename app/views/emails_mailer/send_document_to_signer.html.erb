@@ -43,10 +43,12 @@
         </div>
       <% end %>
       
-      <div style="margin-bottom: 10px;">
-        <strong style="color: #333333;">Seu Papel:</strong>
-        <span style="color: #555555; margin-left: 8px;"><%= @signer.role %></span>
-      </div>
+      <% if @signer.role %>
+        <div style="margin-bottom: 10px;">
+          <strong style="color: #333333;">Seu Papel:</strong>
+          <span style="color: #555555; margin-left: 8px;"><%= @signer.role %></span>
+        </div>
+      <% end %>
       
       <% if @signer.code %>
         <div style="margin-bottom: 0;">

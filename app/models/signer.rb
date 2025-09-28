@@ -4,7 +4,7 @@ class Signer < ApplicationRecord
   belongs_to :document
   store_accessor :variables
 
-  after_update :verify_signatures, if: :saved_change_to_status?
+  after_update_commit :verify_signatures, if: :saved_change_to_status?
 
   scope :pending, -> { where(status: "pending") }
 
@@ -32,6 +32,10 @@ class Signer < ApplicationRecord
 
   def verify_signatures
     signers_pending = document.signers.where(status: "pending")
-    document.update(status: "completed") if signers_pending.count.zero?
+
+    if signers_pending.count.zero?
+      document.update(status: "completed")
+      DocumentSignaturePageService.new(document).call
+    end
   end
 end

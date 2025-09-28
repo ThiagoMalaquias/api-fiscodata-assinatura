@@ -8,9 +8,9 @@ class Api::V1::SignersController < Api::V1::ApplicationController
   end
 
   def sign
-    if @signer.update(status: "signed", signature_at: Time.now)
-      attach_avatar(@signer, params[:signer][:signature])
+    attach_avatar(@signer, params[:signer][:signature])
 
+    if @signer.update(status: "signed", signature_at: Time.now)
       render json: @signer.as_json(except: [:signature]), status: :ok
     else
       render json: @signer.errors, status: :unprocessable_entity

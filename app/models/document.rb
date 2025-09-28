@@ -16,7 +16,6 @@ class Document < ApplicationRecord
   }
 
   validates :name, presence: true
-  validates :file, presence: true
   validates :description, presence: true
 
   def requires_review?

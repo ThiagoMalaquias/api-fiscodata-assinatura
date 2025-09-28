@@ -35,7 +35,7 @@ gem 'webpacker', '~> 5.0'
 gem 'will_paginate'
 gem "write_xlsx"
 gem 'wicked_pdf'
-gem 'wkhtmltopdf-binary', '0.12.3.1'
+gem 'combine_pdf'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]

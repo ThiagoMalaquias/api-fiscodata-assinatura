@@ -2,7 +2,6 @@ class Api::V1::User::DocumentsController < Api::V1::User::ApplicationController
   before_action :set_document, only: [:show, :update, :destroy, :approve, :reject]
 
   def index
-    # Documentos que eu criei OU documentos que eu preciso revisar
     @documents = Document.left_joins(:reviewer)
                         .where(
                           "documents.user_id = ? OR reviewers.user_id = ?",
@@ -33,6 +32,11 @@ class Api::V1::User::DocumentsController < Api::V1::User::ApplicationController
   def create
     service = DocumentCreationService.new(@current_user, document_params, params[:document][:reviewer], params[:document][:signers])
     @document = service.call
+
+    if @document.nil?
+      render json: { errors: "Erro ao criar documento" }, status: :unprocessable_entity
+      return
+    end
     
     render json: @document.as_json(except: [:file], include: [:reviewer]), status: :created
   rescue ActiveRecord::RecordInvalid => e

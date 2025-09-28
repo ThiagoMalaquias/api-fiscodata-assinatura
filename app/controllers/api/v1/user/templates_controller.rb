@@ -1,11 +1,26 @@
 class Api::V1::User::TemplatesController < Api::V1::User::ApplicationController
-  before_action :set_template, only: [:show, :update, :destroy]
+  before_action :set_template, only: [:show, :update, :destroy, :bulk_create]
 
   def index
     @templates = @current_user.templates
   end
 
   def show
+  end
+
+  def bulk_create
+    results = TemplateBulkDocumentGenerationService.new(@template, params[:users], @current_user).call
+
+    success_count = results.count { |r| r[:success] }
+    error_count = results.count { |r| !r[:success] }
+
+    render json: {
+      message: "Processamento concluído",
+      success_count: success_count,
+      error_count: error_count,
+    }, status: :ok
+  rescue => e
+    render json: { errors: e.message }, status: :unprocessable_entity
   end
 
   def create

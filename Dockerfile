@@ -12,6 +12,10 @@ RUN apt-get update -qq && apt-get install -y \
     imagemagick \
     libmagickwand-dev \
     wkhtmltopdf \
+    fonts-dejavu \
+    fonts-liberation \
+    fonts-noto-color-emoji \
+    xfonts-75dpi xfonts-base \
     xvfb \
   && rm -rf /var/lib/apt/lists/*
 
