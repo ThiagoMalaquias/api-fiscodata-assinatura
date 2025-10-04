@@ -99,7 +99,6 @@ class DocumentSignaturePageService
     html
   end
 
-
   def combine_pdfs(signatures_pdf)
     original_pdf   = to_binary(@document.file.download)
     signatures_pdf = to_binary(signatures_pdf)
@@ -124,7 +123,7 @@ class DocumentSignaturePageService
     combined = CombinePDF.new
     combined << CombinePDF.parse(original_pdf)
     combined << CombinePDF.parse(signatures_pdf)
-    combined.to_pdf # String (ASCII-8BIT)
+    combined.to_pdf
   end
 
   def qpdf_available?

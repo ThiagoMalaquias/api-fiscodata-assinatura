@@ -3,6 +3,8 @@ class Api::V1::User::TemplatesController < Api::V1::User::ApplicationController
 
   def index
     @templates = @current_user.templates
+                            .order(created_at: :desc)
+                            .paginate(page: params[:page], per_page: 10)
   end
 
   def show

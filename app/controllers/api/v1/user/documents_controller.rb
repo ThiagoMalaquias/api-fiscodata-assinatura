@@ -8,6 +8,7 @@ class Api::V1::User::DocumentsController < Api::V1::User::ApplicationController
                           @current_user.id, @current_user.id
                         )
                         .order(created_at: :desc)
+                        .paginate(page: params[:page], per_page: 10)
   end
 
   def show

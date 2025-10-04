@@ -47,7 +47,6 @@ class DocumentGenerationFromTemplateService
         <head>
           <meta charset="utf-8">
           <style>
-            /* Exemplo com Inter Regular embutida em Base64 */
             body {
               font-family: 'DejaVu Sans', Arial, sans-serif;
               font-size: 12pt;

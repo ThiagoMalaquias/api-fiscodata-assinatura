@@ -3,6 +3,7 @@ class Api::V1::User::UsersController < Api::V1::User::ApplicationController
 
   def index
     @users = @current_user.company.users.where.not(id: @current_user.id).order(created_at: :desc)
+                        .paginate(page: params[:page], per_page: 10)
   end
 
   def me
