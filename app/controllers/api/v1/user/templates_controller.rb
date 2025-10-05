@@ -1,13 +1,21 @@
 class Api::V1::User::TemplatesController < Api::V1::User::ApplicationController
-  before_action :set_template, only: [:show, :update, :destroy, :bulk_create]
+  before_action :set_template, only: [:show, :update, :destroy, :bulk_create, :move_to_folder, :move_to_back_folder]
 
   def index
-    @templates = @current_user.templates
-                            .order(created_at: :desc)
-                            .paginate(page: params[:page], per_page: 10)
+    @templates = @current_user.templates.where(template_folder_id: nil)
   end
 
   def show
+  end
+
+  def move_to_folder
+    @template.update(template_folder_id: params[:template][:template_folder_id])
+    render json: { message: "Template movido para a pasta" }, status: :ok
+  end
+
+  def move_to_back_folder
+    @template.update(template_folder_id: @template.template_folder.origin_id)
+    render json: { message: "Template movido para a pasta" }, status: :ok
   end
 
   def bulk_create
@@ -59,6 +67,6 @@ class Api::V1::User::TemplatesController < Api::V1::User::ApplicationController
   end
   
   def template_params
-    params.require(:template).permit(:title, :description, :content, :variables)
+    params.require(:template).permit(:title, :description, :content, :variables, :template_folder_id)
   end
 end

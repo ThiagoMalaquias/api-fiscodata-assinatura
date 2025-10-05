@@ -8,4 +8,5 @@ class User < ApplicationRecord
 
   has_many :documents, dependent: :destroy
   has_many :templates, dependent: :destroy
+  has_many :template_folders, dependent: :destroy
 end

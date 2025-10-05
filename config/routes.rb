@@ -24,6 +24,13 @@ Rails.application.routes.draw do
 
         resources :templates do
           post :bulk_create, on: :member
+          put :move_to_folder, on: :member
+          put :move_to_back_folder, on: :member
+        end
+
+        resources :template_folders do
+          put :move_to_folder, on: :member
+          put :move_to_back_folder, on: :member
         end
 
         resources :documents do

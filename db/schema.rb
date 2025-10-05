@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_10_04_222357) do
+ActiveRecord::Schema.define(version: 2025_10_05_124704) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -110,6 +110,17 @@ ActiveRecord::Schema.define(version: 2025_10_04_222357) do
     t.index ["document_id"], name: "index_signers_on_document_id"
   end
 
+  create_table "template_folders", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "origin_type"
+    t.bigint "origin_id"
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["origin_type", "origin_id"], name: "index_template_folders_on_origin"
+    t.index ["user_id"], name: "index_template_folders_on_user_id"
+  end
+
   create_table "templates", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "title"
@@ -118,6 +129,8 @@ ActiveRecord::Schema.define(version: 2025_10_04_222357) do
     t.text "variables", default: [], array: true
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "template_folder_id"
+    t.index ["template_folder_id"], name: "index_templates_on_template_folder_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -145,5 +158,7 @@ ActiveRecord::Schema.define(version: 2025_10_04_222357) do
   add_foreign_key "reviewers", "documents"
   add_foreign_key "reviewers", "users"
   add_foreign_key "signers", "documents"
+  add_foreign_key "template_folders", "users"
+  add_foreign_key "templates", "template_folders"
   add_foreign_key "users", "companies"
 end

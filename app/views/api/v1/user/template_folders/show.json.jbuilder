@@ -1,0 +1,1 @@
+json.partial! "api/v1/user/template_folders/template_folder", template_folder: @template_folder
