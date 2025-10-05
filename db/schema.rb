@@ -63,7 +63,7 @@ ActiveRecord::Schema.define(version: 2025_10_04_222357) do
     t.string "email"
     t.string "phone"
     t.string "cpf"
-    t.string "cpnj"
+    t.string "cnpj"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["company_id"], name: "index_consumers_on_company_id"

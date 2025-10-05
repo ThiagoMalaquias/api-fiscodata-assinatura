@@ -6,7 +6,7 @@ class CreateConsumers < ActiveRecord::Migration[6.1]
       t.string :email
       t.string :phone
       t.string :cpf
-      t.string :cpnj
+      t.string :cnpj
 
       t.timestamps
     end

@@ -5,11 +5,11 @@ one:
   email: MyString
   phone: MyString
   cpf: MyString
-  cpnj: MyString
+  cnpj: MyString
 
 two:
   name: MyString
   email: MyString
   phone: MyString
   cpf: MyString
-  cpnj: MyString
+  cnpj: MyString

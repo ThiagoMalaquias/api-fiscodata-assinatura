@@ -18,6 +18,9 @@ Rails.application.routes.draw do
 
         resources :companies
         resources :signatures
+        resources :consumers do
+          get :get_by_cpf_cnpj, on: :collection
+        end
 
         resources :templates do
           post :bulk_create, on: :member

@@ -38,6 +38,9 @@ class Api::V1::User::TemplatesController < Api::V1::User::ApplicationController
 
   def update
     if @template.update(template_params)
+      @template.variables = params[:template][:variables]
+      @template.save
+      
       render json: @template
     else
       render json: @template.errors, status: :unprocessable_entity
