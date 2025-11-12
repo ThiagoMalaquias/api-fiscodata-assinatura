@@ -1,58 +1,75 @@
-# Backend Rani Passos
+# Assinatura API
 
 Descrição curta do projeto.
 
 ## Configuração do Ambiente
 
-- Ruby version:
-- Rails version:
-- Banco de Dados:
+- Ruby version: 3.1.2
+- Rails version: 6.1.4
+- Banco de Dados: PostgreSQL
 
-## Instalação
+## Instalação Local (Development)
 
-```
+```bash
 # Clone o repositório:
 git clone <URL_DO_REPOSITÓRIO>
 
-# Instale as dependências:
-bundle install
+# Build e subir containers:
+make build
+make up
 
-# Configure o banco de dados:
-rails db:create
-rails db:migrate
+# Configurar banco de dados:
+make db-setup
 
-# Instale as dependências do package.json:
-yarn install
+# Acessar console Rails:
+make console
 
-# Inicie o servidor:
-rails server
+# Acessar shell do container:
+make shell
+```
 
-# Acesse o aplicativo em `http://localhost:3000`.
+## Ambiente de Produção (Contabo)
+
+### Acessar o servidor:
+
+```bash
+ssh root@<IP_DO_CONTABO>
+cd /opt/fiscodata/api-fiscodata-assinatura
+```
+
+### Comandos úteis:
+
+```bash
+# Acessar bash do container:
+docker-compose -f docker-compose.yml exec web bash
+
+# Acessar Rails Console:
+docker-compose -f docker-compose.yml exec web bundle exec rails console
+
+# Ver logs:
+docker-compose -f docker-compose.yml logs -f web
+
+# Reiniciar serviços:
+docker-compose -f docker-compose.yml restart web
+
+# Status dos containers:
+docker-compose -f docker-compose.yml ps
+
+# Ver logs de production
+docker-compose -f docker-compose.yml exec web bash
+tail -f log/production.log
+```
+
+### Deploy:
+
+```bash
+./deploy.sh
 ```
 
 ## Funcionalidades
 
-- Liste aqui as principais funcionalidades do seu aplicativo.
+- Sistema de assinatura de documentos
+- Gestão de templates
+- Gestão de usuários e revisores
 
 ## Estrutura de Arquivos
-
-Explicação sobre a estrutura de arquivos do projeto.
-
-## Testes
-
-Explique como executar os testes automatizados e forneça comandos para executá-los.
-
-## Contribuição
-
-Explique como outros desenvolvedores podem contribuir para o projeto. Inclua informações sobre a política de ramificação (branching), padrões de codificação, fluxo de trabalho de pull requests, etc.
-
-## Autores
-
-- Thiago Malaquias
-
-## Para guardar
-
-Buffer.from("sk_7a870cdb53de4f0cbf351a897f6b32df:").toString('base64')
-
-Em prod:
-docker-compose -f docker-compose.yml exec web bash

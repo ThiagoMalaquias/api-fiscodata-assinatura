@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_10_05_124704) do
+ActiveRecord::Schema.define(version: 2025_11_12_180739) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -130,6 +130,8 @@ ActiveRecord::Schema.define(version: 2025_10_05_124704) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "template_folder_id"
+    t.string "file_docx"
+    t.string "file_pdf"
     t.index ["template_folder_id"], name: "index_templates_on_template_folder_id"
   end
 
