@@ -1,3 +1,5 @@
+require 'open-uri'
+
 class DocumentGenerationFromTemplateService
   def initialize(template, user, current_user)
     @user = user
@@ -9,14 +11,19 @@ class DocumentGenerationFromTemplateService
     ActiveRecord::Base.transaction do
       document = create_empty_document
       signer = create_signer_for_document(document)
-      pdf_content = generate_pdf_with_user_data
-
-      update_document_file(document, pdf_content)
+      if @template.file_pdf.nil?
+        pdf_content = generate_pdf_with_user_data
+        update_document_file(document, pdf_content)
+      else
+        update_document_file_template(document, @template.file_pdf)
+      end
+      
       send_for_signature(signer)
   
       document
     end
   rescue => e
+    debugger
     raise StandardError, e.message
   end
 
@@ -87,6 +94,21 @@ class DocumentGenerationFromTemplateService
     temp_file = Tempfile.new(['document', '.pdf'])
     temp_file.binmode
     temp_file.write(pdf_content)
+    temp_file.rewind
+
+    document.file.attach(
+      io: temp_file,
+      filename: "#{document.name}.pdf",
+      content_type: 'application/pdf'
+    )
+  end
+
+  def update_document_file_template(document, pdf_url)
+    pdf_data = OpenURI.open_uri(pdf_url).read
+    
+    temp_file = Tempfile.new(['document', '.pdf'])
+    temp_file.binmode
+    temp_file.write(pdf_data)
     temp_file.rewind
 
     document.file.attach(
