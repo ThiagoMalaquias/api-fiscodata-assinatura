@@ -12,7 +12,25 @@ class AwsService
 
   def self.upload(file, name)
     obj = s3.bucket(BUCKET).object("#{Time.now.to_i}-#{name}")
-    obj.upload_file(file, acl: 'public-read')
+    
+    # Determina o content_type baseado na extensão do arquivo
+    content_type = case File.extname(name).downcase
+                   when '.pdf' then 'application/pdf'
+                   when '.doc', '.docx' then 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                   when '.jpg', '.jpeg' then 'image/jpeg'
+                   when '.png' then 'image/png'
+                   else 'application/octet-stream'
+                   end
+    
+    obj.upload_file(
+      file,
+      acl: 'public-read',
+      content_type: content_type,
+      metadata: {
+        'Content-Disposition' => 'inline'
+      }
+    )
+    
     obj.public_url
   end
 
