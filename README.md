@@ -12,7 +12,7 @@ Descrição curta do projeto.
 
 ```bash
 # Clone o repositório:
-git clone <URL_DO_REPOSITÓRIO>
+git clone git@github.com:ZaiasNP/contratoFisco-Backend.git
 
 # Build e subir containers:
 make build

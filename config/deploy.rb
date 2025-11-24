@@ -2,7 +2,7 @@
 lock "~> 3.19.0"
 
 set :application, "api-fiscodata-assinatura"
-set :repo_url, "https://github.com/ThiagoMalaquias/api-fiscodata-assinatura.git"
+set :repo_url, "https://github.com/ZaiasNP/contratoFisco-Backend.git"
 
 # Default branch is :main
 set :branch, :main
