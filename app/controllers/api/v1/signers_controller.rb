@@ -8,7 +8,7 @@ class Api::V1::SignersController < Api::V1::ApplicationController
   end
 
   def sign
-    attach_avatar(@signer, params[:signer][:signature])
+    attach_file_document(@signer, params[:signer][:signature])
 
     if @signer.update(status: "signed", signature_at: Time.now)
       render json: @signer.as_json(except: [:signature]), status: :ok
@@ -42,6 +42,23 @@ class Api::V1::SignersController < Api::V1::ApplicationController
 
     image_data = URI.open(avatar)
     signer.signature.attach(io: image_data, filename: "#{filename}.jpg")
+  end
+
+  def attach_file_document(signer, file = nil)
+    require 'open-uri'
+
+    file_document = file || params[:signer][:signature]
+    return if file_document.blank?
+
+    filename = signer.document.name.parameterize(separator: "_").downcase + Time.now.to_i.to_s
+
+    if file_document.include?("data:")
+      signer.document.file.attach(io: decode_image(file_document), filename: "#{filename}.pdf")
+      return
+    end
+
+    file_data = URI.open(file_document)
+    signer.document.file.attach(io: file_data, filename: "#{filename}.pdf")
   end
 
   def decode_image(data)

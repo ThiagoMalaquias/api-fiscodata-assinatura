@@ -32,10 +32,6 @@ class Signer < ApplicationRecord
 
   def verify_signatures
     signers_pending = document.signers.where(status: "pending")
-
-    if signers_pending.count.zero?
-      document.update(status: "completed")
-      DocumentSignaturePageService.new(document).call
-    end
+    document.update(status: "completed") if signers_pending.count.zero?
   end
 end
