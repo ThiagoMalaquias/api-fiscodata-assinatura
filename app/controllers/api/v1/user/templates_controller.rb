@@ -1,12 +1,43 @@
 class Api::V1::User::TemplatesController < Api::V1::User::ApplicationController
   skip_before_action :validate_token, only: [:show_pdf]
-  before_action :set_template, only: [:show, :update, :destroy, :bulk_create, :move_to_folder, :move_to_back_folder, :show_pdf]
+  before_action :set_template, only: [:show, :update, :destroy, :bulk_create, :move_to_folder, :move_to_back_folder, :show_pdf, :download_docx]
 
   def index
     @templates = @current_user.templates.where(template_folder_id: nil)
   end
 
   def show
+  end
+
+  def download_docx
+    unless @template.file_docx.present?
+      return render json: { error: 'Arquivo DOCX não encontrado' }, status: :not_found
+    end
+
+    begin
+      if @template.file_docx.start_with?('http')
+        require 'open-uri'
+
+        file_data = URI.open(@template.file_docx)
+
+        send_data file_data.read,
+                  filename: "#{@template.title || 'documento'}.docx",
+                  type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                  disposition: 'inline'
+      else
+        if @template.file_docx.attached?
+          @template.file_docx.download do |chunk|
+            response.stream.write chunk
+          end
+          response.stream.close
+        else
+          render json: { error: 'Arquivo não encontrado' }, status: :not_found
+        end
+      end
+    rescue => e
+      Rails.logger.error "Erro ao baixar DOCX: #{e.message}"
+      render json: { error: 'Erro ao baixar arquivo' }, status: :internal_server_error
+    end
   end
 
   def move_to_folder
@@ -85,10 +116,11 @@ class Api::V1::User::TemplatesController < Api::V1::User::ApplicationController
     end
     
     if params[:file_pdf].present? && params[:template][:file_pdf] == "true"
-      @template.file_pdf = AwsService.upload(
+      pdf_url = AwsService.upload(
         params[:file_pdf].tempfile.path, 
         params[:file_pdf].original_filename
       )
+      @template.file_pdf = pdf_url
     end
   end
 

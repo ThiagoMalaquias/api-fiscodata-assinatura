@@ -23,7 +23,6 @@ class DocumentGenerationFromTemplateService
       document
     end
   rescue => e
-    debugger
     raise StandardError, e.message
   end
 

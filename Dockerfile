@@ -17,7 +17,9 @@ RUN apt-get update -qq && apt-get install -y \
     fonts-noto-color-emoji \
     xfonts-75dpi xfonts-base \
     xvfb \
-  && rm -rf /var/lib/apt/lists/*
+    libreoffice \
+    libreoffice-core \
+    && rm -rf /var/lib/apt/lists/*
 
 # Node 18 LTS via NodeSource
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \

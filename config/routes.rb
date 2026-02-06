@@ -27,6 +27,7 @@ Rails.application.routes.draw do
           put :move_to_folder, on: :member
           put :move_to_back_folder, on: :member
           get :show_pdf, on: :member
+          get :download_docx, on: :member
         end
 
         resources :template_folders do

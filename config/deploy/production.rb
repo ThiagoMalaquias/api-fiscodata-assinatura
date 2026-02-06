@@ -1,13 +1,13 @@
-server "207.180.210.123", user: "root", roles: %w{app db web}
+server "ec2-54-210-207-178.compute-1.amazonaws.com", user: "ubuntu", roles: %w{app db web}
 
 set :rails_env, "production"
 set :branch, "main"
 
 # SSH options
 set :ssh_options, {
-  keys: %w(/home/user/.ssh/id_rsa),
+  keys: %w(~/.ssh/id_rsa),
   forward_agent: false,
-  auth_methods: %w(password)
+  auth_methods: %w(publickey password)
 }
 
 # Deploy path
